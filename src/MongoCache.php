@@ -49,7 +49,7 @@ final class MongoCache implements CacheInterface
      *
      * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
      */
-    public function get($key, $default = null)
+    public function get($key, $default = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         $this->verifyKey($key);
         $cached = $this->collection->findOne(
@@ -67,17 +67,17 @@ final class MongoCache implements CacheInterface
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
      *
-     * @param string                $key   The key of the item to store.
-     * @param mixed                 $value The value of the item to store, must be serializable.
-     * @param null|int|DateInterval $ttl   Optional. The TTL value of this item. If no value is sent and
-     *                                     the driver supports TTL then the library may set a default value
-     *                                     for it or let the driver take care of that.
+     * @param string                    $key   The key of the item to store.
+     * @param mixed                     $value The value of the item to store, must be serializable.
+     * @param null|integer|DateInterval $ttl   Optional. The TTL value of this item. If no value is sent and
+     *                                         the driver supports TTL then the library may set a default value
+     *                                         for it or let the driver take care of that.
      *
-     * @return bool True on success and false on failure.
+     * @return boolean True on success and false on failure.
      *
      * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
      */
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, $ttl = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         $this->verifyKey($key);
         return $this->updateCache($key, $this->serializer->serialize($value), $this->getExpires($ttl));
@@ -88,11 +88,11 @@ final class MongoCache implements CacheInterface
      *
      * @param string $key The unique cache key of the item to delete.
      *
-     * @return bool True if the item was successfully removed. False if there was an error.
+     * @return boolean True if the item was successfully removed. False if there was an error.
      *
      * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
      */
-    public function delete($key)
+    public function delete($key)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         $this->verifyKey($key);
         try {
@@ -106,9 +106,9 @@ final class MongoCache implements CacheInterface
     /**
      * Wipes clean the entire cache's keys.
      *
-     * @return bool True on success and false on failure.
+     * @return boolean True on success and false on failure.
      */
-    public function clear()
+    public function clear()//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         try {
             $this->collection->deleteMany([]);
@@ -124,11 +124,11 @@ final class MongoCache implements CacheInterface
      * @param iterable $keys    A list of keys that can obtained in a single operation.
      * @param mixed    $default Default value to return for keys that do not exist.
      *
-     * @return array A list of key => value pairs. Cache keys that do not exist or are stale will have $default as value.
+     * @return array List of key => value pairs. Cache keys that do not exist or are stale will have $default as value.
      *
      * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
      */
-    public function getMultiple($keys, $default = null)
+    public function getMultiple($keys, $default = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         array_walk($keys, [$this, 'verifyKey']);
 
@@ -148,17 +148,17 @@ final class MongoCache implements CacheInterface
     /**
      * Persists a set of key => value pairs in the cache, with an optional TTL.
      *
-     * @param iterable              $values A list of key => value pairs for a multiple-set operation.
-     * @param null|int|DateInterval $ttl    Optional. The TTL value of this item. If no value is sent and
-     *                                      the driver supports TTL then the library may set a default value
-     *                                      for it or let the driver take care of that.
+     * @param iterable                  $values A list of key => value pairs for a multiple-set operation.
+     * @param null|integer|DateInterval $ttl    Optional. The TTL value of this item. If no value is sent and
+     *                                          the driver supports TTL then the library may set a default value
+     *                                          for it or let the driver take care of that.
      *
-     * @return bool True on success and false on failure.
+     * @return boolean True on success and false on failure.
      *
      * @throws InvalidArgumentException Thrown if $values is neither an array nor a Traversable,
      *                                  or if any of the $values are not a legal value.
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple($values, $ttl = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         $expires = $this->getExpires($ttl);
         foreach ($values as $key => $value) {
@@ -176,12 +176,12 @@ final class MongoCache implements CacheInterface
      *
      * @param iterable $keys A list of string-based keys to be deleted.
      *
-     * @return bool True if the items were successfully removed. False if there was an error.
+     * @return boolean True if the items were successfully removed. False if there was an error.
      *
      * @throws InvalidArgumentException Thrown if $keys is neither an array nor a Traversable,
      *                                  or if any of the $keys are not a legal value.
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple($keys)//@codingStandardsIgnoreLine Interface does not define type-hints
     {
         array_walk($keys, [$this, 'verifyKey']);
 
@@ -203,11 +203,11 @@ final class MongoCache implements CacheInterface
      *
      * @param string $key The cache item key.
      *
-     * @return bool
+     * @return boolean
      *
      * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
      */
-    public function has($key)
+    public function has($key) //@codingStandardsIgnoreLine  Interface does not define type-hints
     {
         $this->verifyKey($key);
         return $this->collection->count(['_id' => $key]) === 1;
@@ -216,15 +216,15 @@ final class MongoCache implements CacheInterface
     /**
      * Upserts a PSR-7 response in the cache.
      *
-     * @param string $key The key of the response to store.
-     * @param array  $value The data to store.
+     * @param string      $key     The key of the response to store.
+     * @param array       $value   The data to store.
      * @param UTCDateTime $expires The expire date of the cache item.
      *
-     * @return bool
+     * @return boolean
      */
-    private function updateCache(string $key, array $data, UTCDateTime $expires) : bool
+    private function updateCache(string $key, array $value, UTCDateTime $expires) : bool
     {
-        $document = ['_id' => $key, 'expires' => $expires]  + $data;
+        $document = ['_id' => $key, 'expires' => $expires]  + $value;
         try {
             $this->collection->updateOne(['_id' => $key], ['$set' => $document], ['upsert' => true]);
             return true;
@@ -242,7 +242,7 @@ final class MongoCache implements CacheInterface
      *
      * @throws InvalidArgumentException Thrown if the $ttl is not null, an integer or \DateInterval.
      */
-    private function getExpires($ttl)
+    private function getExpires($ttl) : UTCDateTime
     {
         $ttl = $ttl ?: 86400;
 
@@ -266,7 +266,7 @@ final class MongoCache implements CacheInterface
      *
      * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
      */
-    final private function verifyKey($key)
+    private function verifyKey($key)
     {
         if (!is_string($key) || $key === '') {
             throw new InvalidArgumentException('$key must be a valid non-empty string');

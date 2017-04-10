@@ -392,11 +392,25 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     {
         return new class implements SerializerInterface
         {
+            /**
+             * @see SerializerInterface::unserialize().
+             *
+             * @param array $data The serialized data.
+             *
+             * @return DateTime
+             */
             public function unserialize(array $data)
             {
                 return new DateTime("@{$data['timestamp']}", timezone_open($data['timezone']));
             }
 
+            /**
+             * @see SerializerInterface::serialize().
+             *
+             * @param mixed $value The data to serialize.
+             *
+             * @return array
+             */
             public function serialize($value) : array
             {
                 return [
