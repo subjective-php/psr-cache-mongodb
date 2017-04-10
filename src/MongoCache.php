@@ -30,7 +30,8 @@ final class MongoCache implements CacheInterface
      * Construct a new instance of MongoCache.
      *
      * @param Collection          $collection The collection containing the cached data.
-     * @param SerializerInterface $serializer The collection containing the cached data.
+     * @param SerializerInterface $serializer A concrete serializer for converting data to and from BSON serializable
+     *                                        data.
      */
     public function __construct(Collection $collection, SerializerInterface $serializer)
     {
