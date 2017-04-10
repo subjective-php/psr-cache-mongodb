@@ -12,6 +12,8 @@
 [![Daily Downloads](https://poser.pugx.org/chadicus/psr-cache-mongodb/d/daily)](https://packagist.org/packages/chadicus/psr-cache-mongodb)
 [![Monthly Downloads](https://poser.pugx.org/chadicus/psr-cache-mongodb/d/monthly)](https://packagist.org/packages/chadicus/psr-cache-mongodb)
 
+[![Documentation](https://img.shields.io/badge/reference-phpdoc-blue.svg?style=flat)](http://pholiophp.org/chadicus/psr-cache-mongodb)
+
 [PSR-16 SimpleCache](http://www.php-fig.org/psr/psr-16/) Implementation using [MongoDB](https://docs.mongodb.com/php-library/master/)
 
 ## Requirements
