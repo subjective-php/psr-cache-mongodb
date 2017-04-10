@@ -16,7 +16,7 @@
 
 ## Requirements
 
-Chadicus\Util\Exception requires PHP 7.0 (or later).
+Requires PHP 7.0 (or later).
 
 ## Composer
 To add the library as a local, per-project dependency use [Composer](http://getcomposer.org)! Simply add a dependency on `chadicus/psr-cache-mongodb` to your project's `composer.json` file such as:
