@@ -2,7 +2,6 @@
 
 namespace Chadicus\Psr\SimpleCache;
 
-use GuzzleHttp\Psr7\Response;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;
