@@ -1,4 +1,4 @@
-# Chadicus\Psr\SimpleCache\MongoCache
+# Simple MongoDB Cache
 
 [![Build Status](https://travis-ci.org/chadicus/psr-cache-mongodb.svg?branch=master)](https://travis-ci.org/chadicus/psr-cache-mongodb)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/chadicus/psr-cache-mongodb/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/chadicus/psr-cache-mongodb/?branch=master)
