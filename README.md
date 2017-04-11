@@ -40,3 +40,86 @@ With a checkout of the code get [Composer](http://getcomposer.org) in your PATH 
 composer install
 ./vendor/bin/phpunit
 ```
+## Example Caching PSR-7 Response Messages with Guzzle Client
+
+Below is a very simplified example of caching responses to GET requests in mongo.
+
+```php
+<?php
+
+use Chadicus\Psr\SimplCache\SerializerInterface;
+use Chadicus\Psr\SimplCache\MongoCache;
+use GuzzleHttp\Psr7;
+use MongoDB\Client;
+use Psr\SimpleCache\InvalidArgumentException;
+
+/**
+ * Provides serialization from mongo documents to PSR-7 response objects.
+ */
+final class Psr7Serializer implements SerializerInterface
+{
+    /**
+     * Unserializes cached data into the original state.
+     *
+     * @param array $data The data to unserialize.
+     *
+     * @return Diactoros\Response
+     */
+    public function unserialize(array $data)
+    {
+        return new Psr7\Response(
+            $data['statusCode'],
+            $data['headers'],
+            $data['body'],
+            $data['protocolVersion'],
+            $data['reasonPhrase']
+        );
+    }
+
+    /**
+     * Serializes the given data for storage in caching.
+     *
+     * @param mixed $value The data to serialize for caching.
+     *
+     * @return array The result of serializing the given $data.
+     *
+     * @throws InvalidArgumentException Thrown if the given value is not a PSR-7 Response instance.
+     */
+    public function serialize($value) : array
+    {
+        if (!is_a($value, '\\Psr\\Http\\Message\\ResponseInterface')) {
+            throw new class('$value was not a PSR-7 Response') extends \Exception implements InvalidArgumentException { };
+        }
+
+        return [
+            'statusCode' => $value->getStatusCode(),
+            'headers' => $value->getHeaders(),
+            'body' => (string)$value->getBody(),
+            'protocolVersion' => $value->getProtocolVersion(),
+            'reasonPhrase' => $value->getReasonPhrase(),
+        ];
+    }
+}
+
+$collection = new Client('mongodb://locathost:27017')->selectDatabase('psr')->selectCollection('cache');
+
+$cache = new MongoCache($collection, new Psr7Serializer());
+
+// Use the cache when sending guzzle requests
+
+//Only caching GET responses
+if ($request->getMethod() === 'GET') {
+    $key = (string)$request->getUri();
+    $response = $cache->get($key);
+    if ($response === null) {
+        $response = $guzzleClient->send($request);
+        //Add to cache if valid Expires header
+        if ($response->hasHeader('Expires')) {
+            $expires = strtotime($response->getHeader('Expires')[0]);
+            $cache->set($key, $response, $expires - time());
+        }
+    }
+} else {
+    $response = $guzzleClient->send($request);
+}
+```
