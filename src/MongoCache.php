@@ -26,6 +26,16 @@ final class MongoCache implements CacheInterface
     private $serialzier;
 
     /**
+     * Array of settings to use with find commands.
+     *
+     * @var array
+     */
+    private static $findSettings = [
+        'typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array'],
+        'projection' => ['expires' => false],
+    ];
+
+    /**
      * Construct a new instance of MongoCache.
      *
      * @param Collection          $collection The collection containing the cached data.
@@ -52,11 +62,7 @@ final class MongoCache implements CacheInterface
     public function get($key, $default = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
         $this->verifyKey($key);
-        $cached = $this->collection->findOne(
-            ['_id' => $key],
-            ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]
-        );
-
+        $cached = $this->collection->findOne(['_id' => $key], self::$findSettings);
         if ($cached === null) {
             return $default;
         }
@@ -133,11 +139,7 @@ final class MongoCache implements CacheInterface
         array_walk($keys, [$this, 'verifyKey']);
 
         $items = array_fill_keys($keys, $default);
-        $cached = $this->collection->find(
-            ['_id' => ['$in' => $keys]],
-            ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]
-        );
-
+        $cached = $this->collection->find(['_id' => ['$in' => $keys]], self::$findSettings);
         foreach ($cached as $item) {
             $items[$item['_id']] = $this->serializer->unserialize($item);
         }
