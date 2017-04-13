@@ -19,11 +19,11 @@ final class MongoCache implements CacheInterface
     private $collection;
 
     /**
-     * The serializer.
+     * The object responsible for serializing data to and from Mongo documents.
      *
      * @var SerializerInterface
      */
-    private $serialzier;
+    private $serializer;
 
     /**
      * Array of settings to use with find commands.
