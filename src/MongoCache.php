@@ -271,7 +271,11 @@ final class MongoCache implements CacheInterface
     private function verifyKey($key)
     {
         if (!is_string($key) || $key === '') {
-            throw new InvalidArgumentException('$key must be a valid non-empty string');
+            throw new InvalidArgumentException('$key must be a valid non empty string');
+        }
+
+        if (preg_match('#[{}()/\\\@:]#', $key) > 0) {
+            throw new InvalidArgumentException("Key '{$key}' contains unsupported characters");
         }
     }
 }

@@ -116,18 +116,48 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Verify behavior of set() with illegal $value.
+     * Verify behavior of set() with empty $key.
      *
      * @test
      * @covers ::set
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     * @expectedExceptionMessage $key must be a valid non-empty string
+     * @expectedExceptionMessage $key must be a valid non empty string
      *
      * @return void
      */
-    public function setInvalidKey()
+    public function setEmptyKey()
     {
         $this->cache->set('', new DateTime());
+    }
+
+    /**
+     * Verify behavior of set() with non string $key.
+     *
+     * @test
+     * @covers ::set
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
+     * @expectedExceptionMessage $key must be a valid non empty string
+     *
+     * @return void
+     */
+    public function setNonStringKey()
+    {
+        $this->cache->set(new \StdClass(), new DateTime());
+    }
+
+    /**
+     * Verify behavior of set() with string $key containing reserved characters.
+     *
+     * @test
+     * @covers ::set
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
+     * @expectedExceptionMessage Key 'key with {, ) & @' contains unsupported characters
+     *
+     * @return void
+     */
+    public function setKeyContainsReservedCharacters()
+    {
+        $this->cache->set('key with {, ) & @', new DateTime());
     }
 
     /**
