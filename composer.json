@@ -20,7 +20,7 @@
     "require-dev": {
         "phpunit/phpunit": "^6.1",
         "chadicus/coding-standard": "^1.2",
-        "satooshi/php-coveralls": "^1.0"
+        "php-coveralls/php-coveralls": "^2.0"
     },
     "autoload": {
         "psr-4": { "Chadicus\\Psr\\SimpleCache\\": "src" }
