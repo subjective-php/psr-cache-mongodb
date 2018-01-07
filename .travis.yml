@@ -2,16 +2,11 @@ language: php
 php:
   - 7.0
   - 7.1
+  - 7.2
 services: mongodb
-addons:
-  apt:
-    sources:
-    - mongodb-3.0-precise
-    packages:
-    - mongodb-org-server
 before_script:
-  - echo 'extension="mongodb.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - bash -c 'while ! exec 6<>/dev/tcp/localhost/27017; do echo "$(date) - still trying to connect to mongo"; sleep 1; done'
+  - composer self-update
+  - yes '' | pecl install -f mongodb-1.1
   - composer install
 script: ./vendor/bin/phpunit --coverage-clover clover.xml
 after_success: ./vendor/bin/coveralls -v
