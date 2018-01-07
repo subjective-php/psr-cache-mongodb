@@ -101,7 +101,10 @@ final class Psr7Serializer implements SerializerInterface
     }
 }
 
-$collection = new Client('mongodb://locathost:27017')->selectDatabase('psr')->selectCollection('cache');
+//create the mongo collection
+$collection = (new Client('mongodb://locathost:27017'))->selectDatabase('psr')->selectCollection('cache');
+//Set a TTL index on the expires field
+$collection->createIndex(['expires' => 1], ['expireAfterSeconds' => 0]);
 
 $cache = new MongoCache($collection, new Psr7Serializer());
 

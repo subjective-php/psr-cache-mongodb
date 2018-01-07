@@ -51,7 +51,6 @@ final class MongoCache implements CacheInterface
     public function __construct(Collection $collection, SerializerInterface $serializer)
     {
         $this->collection = $collection;
-        $this->collection->createIndex(['expires' => 1], ['expireAfterSeconds' => 0, 'background' => true]);
         $this->serializer = $serializer;
     }
 
