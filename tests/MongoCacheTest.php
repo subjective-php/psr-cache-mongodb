@@ -425,7 +425,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
             /**
              * @see SerializerInterface::unserialize().
              *
-             * @param array $data The serialized data.
+             * @param mixed $data The serialized data.
              *
              * @return DateTime
              */
