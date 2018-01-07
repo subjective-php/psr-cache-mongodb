@@ -3,7 +3,7 @@ namespace ChadicusTest\Psr\SimpleCache;
 
 use Chadicus\Psr\SimpleCache\InvalidArgumentException;
 use Chadicus\Psr\SimpleCache\MongoCache;
-use Chadicus\Psr\SimpleCache\SerializerInterface;
+use Chadicus\Psr\SimpleCache\Serializer\SerializerInterface;
 use DateTime;
 use DateTimeZone;
 use MongoDB\BSON\UTCDateTime;
@@ -429,7 +429,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
              *
              * @return DateTime
              */
-            public function unserialize(array $data)
+            public function unserialize($data)
             {
                 return new DateTime("@{$data['timestamp']}", timezone_open($data['timezone']));
             }
@@ -441,7 +441,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
              *
              * @return array
              */
-            public function serialize($value) : array
+            public function serialize($value)
             {
                 return [
                     'timestamp' => $value->getTimestamp(),
