@@ -2,6 +2,7 @@
 
 namespace Chadicus\Psr\SimpleCache;
 
+use Chadicus\Psr\SimpleCache\Serializer\SerializerInterface;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;
