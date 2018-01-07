@@ -3,6 +3,8 @@
 namespace Chadicus\Psr\SimpleCache;
 
 use Chadicus\Psr\SimpleCache\Serializer\SerializerInterface;
+use Chadicus\Psr\SimpleCache\KeyValidatorTrait;
+use Chadicus\Psr\SimpleCache\TTLValidatorTrait;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;
@@ -12,6 +14,9 @@ use Psr\SimpleCache\CacheInterface;
  */
 final class MongoCache implements CacheInterface
 {
+    use KeyValidatorTrait;
+    use TTLValidatorTrait;
+
     /**
      * MongoDB collection containing the cached responses.
      *
@@ -62,7 +67,7 @@ final class MongoCache implements CacheInterface
      */
     public function get($key, $default = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
-        $this->verifyKey($key);
+        $this->validateKey($key);
         $cached = $this->collection->findOne(['_id' => $key], self::$findSettings);
         if ($cached === null) {
             return $default;
@@ -86,7 +91,7 @@ final class MongoCache implements CacheInterface
      */
     public function set($key, $value, $ttl = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
-        $this->verifyKey($key);
+        $this->validateKey($key);
         return $this->updateCache($key, $this->serializer->serialize($value), $this->getExpires($ttl));
     }
 
@@ -101,7 +106,7 @@ final class MongoCache implements CacheInterface
      */
     public function delete($key)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
-        $this->verifyKey($key);
+        $this->validateKey($key);
         try {
             $this->collection->deleteOne(['_id' => $key]);
             return true;
@@ -137,7 +142,7 @@ final class MongoCache implements CacheInterface
      */
     public function getMultiple($keys, $default = null)//@codingStandardsIgnoreLine Interface does not define type-hints or return
     {
-        array_walk($keys, [$this, 'verifyKey']);
+        $this->validateKeys($keys);
 
         $items = array_fill_keys($keys, $default);
         $cached = $this->collection->find(['_id' => ['$in' => $keys]], self::$findSettings);
@@ -165,7 +170,7 @@ final class MongoCache implements CacheInterface
     {
         $expires = $this->getExpires($ttl);
         foreach ($values as $key => $value) {
-            $this->verifyKey($key);
+            $this->validateKey($key);
             if (!$this->updateCache($key, $this->serializer->serialize($value), $expires)) {
                 return false;
             }
@@ -186,7 +191,7 @@ final class MongoCache implements CacheInterface
      */
     public function deleteMultiple($keys)//@codingStandardsIgnoreLine Interface does not define type-hints
     {
-        array_walk($keys, [$this, 'verifyKey']);
+        $this->validateKeys($keys);
 
         try {
             $this->collection->deleteMany(['_id' => ['$in' => $keys]]);
@@ -212,7 +217,7 @@ final class MongoCache implements CacheInterface
      */
     public function has($key) //@codingStandardsIgnoreLine  Interface does not define type-hints
     {
-        $this->verifyKey($key);
+        $this->validateKey($key);
         return $this->collection->count(['_id' => $key]) === 1;
     }
 
@@ -258,25 +263,5 @@ final class MongoCache implements CacheInterface
         }
 
         throw new InvalidArgumentException('$ttl must be null, an integer or \DateInterval instance');
-    }
-
-    /**
-     * Verifies the the given cache key is a legal value.
-     *
-     * @param mixed $key The cache key to validate.
-     *
-     * @return void
-     *
-     * @throws InvalidArgumentException Thrown if the $key string is not a legal value.
-     */
-    private function verifyKey($key)
-    {
-        if (!is_string($key) || $key === '') {
-            throw new InvalidArgumentException('$key must be a valid non empty string');
-        }
-
-        if (preg_match('#[{}()/\\\@:]#', $key) > 0) {
-            throw new InvalidArgumentException("Key '{$key}' contains unsupported characters");
-        }
     }
 }
