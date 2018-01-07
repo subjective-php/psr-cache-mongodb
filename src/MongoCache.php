@@ -247,21 +247,17 @@ final class MongoCache implements CacheInterface
      * @param mixed $ttl The time-to-live value to validate.
      *
      * @return UTCDateTime
-     *
-     * @throws InvalidArgumentException Thrown if the $ttl is not null, an integer or \DateInterval.
      */
     private function getExpires($ttl) : UTCDateTime
     {
+        $this->validateTTL($ttl);
+
         $ttl = $ttl ?: 86400;
 
         if ($ttl instanceof \DateInterval) {
             return new UTCDateTime((new \DateTime('now'))->add($ttl)->getTimestamp() * 1000);
         }
 
-        if (is_int($ttl)) {
-            return new UTCDateTime((time() + $ttl) * 1000);
-        }
-
-        throw new InvalidArgumentException('$ttl must be null, an integer or \DateInterval instance');
+        return new UTCDateTime((time() + $ttl) * 1000);
     }
 }
