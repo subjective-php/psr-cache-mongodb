@@ -22,7 +22,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     /**
      * Mongo Collection to use in tests.
      *
-     * @var MongoDB\Collection
+     * @var \MongoDB\Collection
      */
     private $collection;
 
