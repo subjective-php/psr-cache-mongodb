@@ -2,14 +2,6 @@
     "name": "subjective-php/psr-cache-mongodb",
     "description": "PSR-16 SimpleCache Implementation using MongoDB",
     "keywords": ["psr", "psr16", "mongo", "cache"],
-    "authors": [
-        {
-            "name": "Chad Gray",
-            "email": "chadwickgray@gmail.com",
-            "homepage": "http://chadicus.org",
-            "role": "Developer"
-        }
-    ],
     "require": {
         "php": "^7.0",
         "psr/simple-cache": "^1.0",
