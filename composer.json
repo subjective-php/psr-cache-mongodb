@@ -18,9 +18,9 @@
         "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {
-        "psr-4": { "Chadicus\\Psr\\SimpleCache\\": "src" }
+        "psr-4": { "SubjectivePHP\\Psr\\SimpleCache\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "ChadicusTest\\Psr\\SimpleCache\\": "tests" }
+        "psr-4": { "SubjectivePHPTest\\Psr\\SimpleCache\\": "tests" }
     }
 }
