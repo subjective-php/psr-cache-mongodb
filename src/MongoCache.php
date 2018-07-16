@@ -2,12 +2,10 @@
 
 namespace SubjectivePHP\Psr\SimpleCache;
 
-use Chadicus\Psr\SimpleCache\Serializer\SerializerInterface;
-use Chadicus\Psr\SimpleCache\KeyValidatorTrait;
-use Chadicus\Psr\SimpleCache\TTLValidatorTrait;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;
+use SubjectivePHP\Psr\SimpleCache\Serializer\SerializerInterface;
 
 /**
  * A PSR-16 implementation which stores data in a MongoDB collection.

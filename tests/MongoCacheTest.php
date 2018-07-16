@@ -1,13 +1,13 @@
 <?php
 namespace SubjectivePHPTest\Psr\SimpleCache;
 
-use Chadicus\Psr\SimpleCache\InvalidArgumentException;
-use Chadicus\Psr\SimpleCache\Serializer\SerializerInterface;
 use DateTime;
 use DateTimeZone;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Client;
+use SubjectivePHP\Psr\SimpleCache\InvalidArgumentException;
 use SubjectivePHP\Psr\SimpleCache\MongoCache;
+use SubjectivePHP\Psr\SimpleCache\Serializer\SerializerInterface;
 
 /**
  * Defines unit tests for the MongoCache class.
