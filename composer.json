@@ -1,5 +1,5 @@
 {
-    "name": "chadicus/psr-cache-mongodb",
+    "name": "subjective-php/psr-cache-mongodb",
     "description": "PSR-16 SimpleCache Implementation using MongoDB",
     "keywords": ["psr", "psr16", "mongo", "cache"],
     "authors": [
