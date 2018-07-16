@@ -13,9 +13,9 @@
     },
     "license": "MIT",
     "require-dev": {
+        "php-coveralls/php-coveralls": "^2.0",
         "phpunit/phpunit": "^6.1",
-        "chadicus/coding-standard": "^1.2",
-        "php-coveralls/php-coveralls": "^2.0"
+        "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {
         "psr-4": { "Chadicus\\Psr\\SimpleCache\\": "src" }
