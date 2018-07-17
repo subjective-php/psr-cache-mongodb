@@ -2,6 +2,7 @@
 
 namespace SubjectivePHP\Psr\SimpleCache;
 
+use DateTimeInterval;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;

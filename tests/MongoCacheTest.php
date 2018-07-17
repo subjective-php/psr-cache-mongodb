@@ -69,8 +69,6 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function get()
     {
-        $json = json_encode(['status' => 'ok']);
-        $headers = ['Content-Type' => ['application/json'], 'eTag' => ['"an etag"']];
         $this->collection->insertOne(
             [
                 '_id' => 'key',
@@ -194,8 +192,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     public function deleteMongoException()
     {
         $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['deleteOne', 'createIndex']
+            '\\MongoDB\\Collection'
         )->disableOriginalConstructor()->getMock();
         $mockCollection->method('deleteOne')->will($this->throwException(new \Exception()));
         $cache = new MongoCache($mockCollection, $this->getSerializer());
@@ -236,8 +233,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     public function clearMongoException()
     {
         $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['deleteMany', 'createIndex']
+            '\\MongoDB\\Collection'
         )->disableOriginalConstructor()->getMock();
         $mockCollection->method('deleteMany')->will($this->throwException(new \Exception()));
         $cache = new MongoCache($mockCollection, $this->getSerializer());
@@ -317,8 +313,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     public function setMultpleMongoException()
     {
         $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['updateOne', 'createIndex']
+            '\\MongoDB\\Collection'
         )->disableOriginalConstructor()->getMock();
         $mockCollection->method('updateOne')->will($this->throwException(new \Exception()));
         $cache = new MongoCache($mockCollection, $this->getSerializer());
@@ -361,8 +356,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     public function deleteMultipleMongoException()
     {
         $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['deleteMany', 'createIndex']
+            '\\MongoDB\\Collection'
         )->disableOriginalConstructor()->getMock();
         $mockCollection->method('deleteMany')->will($this->throwException(new \Exception()));
         $cache = new MongoCache($mockCollection, $this->getSerializer());
