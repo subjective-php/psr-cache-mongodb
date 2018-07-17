@@ -1,18 +1,19 @@
 <?php
-namespace ChadicusTest\Psr\SimpleCache;
+namespace SubjectivePHPTest\Psr\SimpleCache;
 
-use Chadicus\Psr\SimpleCache\InvalidArgumentException;
-use Chadicus\Psr\SimpleCache\MongoCache;
-use Chadicus\Psr\SimpleCache\Serializer\SerializerInterface;
 use DateTime;
 use DateTimeZone;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Client;
+use MongoDB\Collection;
+use SubjectivePHP\Psr\SimpleCache\InvalidArgumentException;
+use SubjectivePHP\Psr\SimpleCache\MongoCache;
+use SubjectivePHP\Psr\SimpleCache\Serializer\SerializerInterface;
 
 /**
  * Defines unit tests for the MongoCache class.
  *
- * @coversDefaultClass \Chadicus\Psr\SimpleCache\MongoCache
+ * @coversDefaultClass \SubjectivePHP\Psr\SimpleCache\MongoCache
  * @covers ::__construct
  * @covers ::<private>
  * @covers ::<protected>
@@ -22,7 +23,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     /**
      * Mongo Collection to use in tests.
      *
-     * @var MongoDB\Collection
+     * @var Collection
      */
     private $collection;
 
@@ -69,8 +70,6 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function get()
     {
-        $json = json_encode(['status' => 'ok']);
-        $headers = ['Content-Type' => ['application/json'], 'eTag' => ['"an etag"']];
         $this->collection->insertOne(
             [
                 '_id' => 'key',
@@ -193,11 +192,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function deleteMongoException()
     {
-        $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['deleteOne', 'createIndex']
-        )->disableOriginalConstructor()->getMock();
-        $mockCollection->method('deleteOne')->will($this->throwException(new \Exception()));
+        $mockCollection = $this->getFailingCollectionMock('deleteOne');
         $cache = new MongoCache($mockCollection, $this->getSerializer());
         $this->assertFalse($cache->delete('key'));
     }
@@ -235,11 +230,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function clearMongoException()
     {
-        $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['deleteMany', 'createIndex']
-        )->disableOriginalConstructor()->getMock();
-        $mockCollection->method('deleteMany')->will($this->throwException(new \Exception()));
+        $mockCollection = $this->getFailingCollectionMock('deleteMany');
         $cache = new MongoCache($mockCollection, $this->getSerializer());
         $this->assertFalse($cache->clear());
     }
@@ -254,8 +245,6 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function getMultiple()
     {
-        $json = json_encode(['status' => 'ok']);
-        $headers = ['Content-Type' => ['application/json'], 'eTag' => ['"an etag"']];
         $this->collection->insertOne(
             [
                 '_id' => 'key1',
@@ -316,11 +305,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function setMultpleMongoException()
     {
-        $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['updateOne', 'createIndex']
-        )->disableOriginalConstructor()->getMock();
-        $mockCollection->method('updateOne')->will($this->throwException(new \Exception()));
+        $mockCollection = $this->getFailingCollectionMock('updateOne');
         $cache = new MongoCache($mockCollection, $this->getSerializer());
         $responses = ['key1' => new DateTime(), 'key2' => new DateTime()];
         $this->assertFalse($cache->setMultiple($responses, 86400));
@@ -360,11 +345,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      */
     public function deleteMultipleMongoException()
     {
-        $mockCollection = $this->getMockBuilder(
-            '\\MongoDB\\Collection',
-            ['deleteMany', 'createIndex']
-        )->disableOriginalConstructor()->getMock();
-        $mockCollection->method('deleteMany')->will($this->throwException(new \Exception()));
+        $mockCollection = $this->getFailingCollectionMock('deleteMany');
         $cache = new MongoCache($mockCollection, $this->getSerializer());
         $this->assertFalse($cache->deleteMultiple(['key1', 'key3']));
     }
@@ -411,6 +392,13 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
             ],
             $actual
         );
+    }
+
+    private function getFailingCollectionMock(string $methodToFail) : Collection
+    {
+        $mock = $this->getMockBuilder(Collection::class)->disableOriginalConstructor()->getMock();
+        $mock->method($methodToFail)->will($this->throwException(new \Exception()));
+        return $mock;
     }
 
     /**

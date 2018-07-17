@@ -1,31 +1,26 @@
 {
-    "name": "chadicus/psr-cache-mongodb",
+    "name": "subjective-php/psr-cache-mongodb",
     "description": "PSR-16 SimpleCache Implementation using MongoDB",
     "keywords": ["psr", "psr16", "mongo", "cache"],
-    "authors": [
-        {
-            "name": "Chad Gray",
-            "email": "chadwickgray@gmail.com",
-            "homepage": "http://chadicus.org",
-            "role": "Developer"
-        }
-    ],
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "php": "^7.0",
-        "psr/simple-cache": "^1.0",
         "mongodb/mongodb": "^1.1",
-        "chadicus/psr-cache-helper": "^0.2.1"
+        "psr/simple-cache": "^1.0",
+        "subjective-php/psr-cache-helper": "^1.0"
     },
     "license": "MIT",
     "require-dev": {
+        "php-coveralls/php-coveralls": "^2.0",
         "phpunit/phpunit": "^6.1",
-        "chadicus/coding-standard": "^1.2",
-        "php-coveralls/php-coveralls": "^2.0"
+        "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {
-        "psr-4": { "Chadicus\\Psr\\SimpleCache\\": "src" }
+        "psr-4": { "SubjectivePHP\\Psr\\SimpleCache\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "ChadicusTest\\Psr\\SimpleCache\\": "tests" }
+        "psr-4": { "SubjectivePHPTest\\Psr\\SimpleCache\\": "tests" }
     }
 }
