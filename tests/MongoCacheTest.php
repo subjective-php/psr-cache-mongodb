@@ -47,6 +47,19 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @test
+     *
+     * @return void
+     */
+    public function useWithoutSerializer()
+    {
+        $cache = new MongoCache($this->collection);
+        $data = ['a', 'b', 'c'];
+        $cache->set('foo', $data);
+        $this->assertSame($data, $cache->get('foo'));
+    }
+
+    /**
      * Verify behavior of get() when the key is not found.
      *
      * @test

@@ -6,6 +6,7 @@ use DateInterval;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;
+use SubjectivePHP\Psr\SimpleCache\Serializer\NullSerializer;
 use SubjectivePHP\Psr\SimpleCache\Serializer\SerializerInterface;
 
 /**
@@ -47,10 +48,10 @@ final class MongoCache implements CacheInterface
      * @param SerializerInterface $serializer A concrete serializer for converting data to and from BSON serializable
      *                                        data.
      */
-    public function __construct(Collection $collection, SerializerInterface $serializer)
+    public function __construct(Collection $collection, SerializerInterface $serializer = null)
     {
         $this->collection = $collection;
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?? new NullSerializer();
     }
 
     /**
