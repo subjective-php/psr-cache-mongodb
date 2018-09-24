@@ -47,6 +47,19 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @test
+     *
+     * @return void
+     */
+    public function useWithoutSerializer()
+    {
+        $cache = new MongoCache($this->collection);
+        $data = ['a', 'b', 'c'];
+        $cache->set('foo', $data);
+        $this->assertSame($data, $cache->get('foo'));
+    }
+
+    /**
      * Verify behavior of get() when the key is not found.
      *
      * @test
@@ -73,8 +86,10 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
         $this->collection->insertOne(
             [
                 '_id' => 'key',
-                'timestamp' => 1491782286,
-                'timezone' => 'America/New_York',
+                'data' => [
+                    'timestamp' => 1491782286,
+                    'timezone' => 'America/New_York',
+                ],
             ]
         );
 
@@ -248,16 +263,20 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
         $this->collection->insertOne(
             [
                 '_id' => 'key1',
-                'timestamp' => 1491782286,
-                'timezone' => 'America/New_York',
+                'data' => [
+                    'timestamp' => 1491782286,
+                    'timezone' => 'America/New_York',
+                ],
                 'expires' => new UTCDateTime(strtotime('+1 day') * 1000),
             ]
         );
         $this->collection->insertOne(
             [
                 '_id' => 'key3',
-                'timestamp' => 1491807244,
-                'timezone' => 'Pacific/Honolulu',
+                'data' => [
+                    'timestamp' => 1491807244,
+                    'timezone' => 'Pacific/Honolulu',
+                ],
                 'expires' => new UTCDateTime(strtotime('+1 day') * 1000),
             ]
         );
@@ -387,8 +406,10 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
             [
                 '_id' => $key,
                 'expires' => $actual['expires'],
-                'timestamp' => $expected->getTimestamp(),
-                'timezone' => $expected->getTimeZone()->getName(),
+                'data' => [
+                    'timestamp' => $expected->getTimestamp(),
+                    'timezone' => $expected->getTimeZone()->getName(),
+                ],
             ],
             $actual
         );

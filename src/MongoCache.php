@@ -6,6 +6,7 @@ use DateInterval;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use Psr\SimpleCache\CacheInterface;
+use SubjectivePHP\Psr\SimpleCache\Serializer\NullSerializer;
 use SubjectivePHP\Psr\SimpleCache\Serializer\SerializerInterface;
 
 /**
@@ -47,10 +48,10 @@ final class MongoCache implements CacheInterface
      * @param SerializerInterface $serializer A concrete serializer for converting data to and from BSON serializable
      *                                        data.
      */
-    public function __construct(Collection $collection, SerializerInterface $serializer)
+    public function __construct(Collection $collection, SerializerInterface $serializer = null)
     {
         $this->collection = $collection;
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?? new NullSerializer();
     }
 
     /**
@@ -71,7 +72,7 @@ final class MongoCache implements CacheInterface
             return $default;
         }
 
-        return $this->serializer->unserialize($cached);
+        return $this->serializer->unserialize($cached['data']);
     }
 
     /**
@@ -145,7 +146,7 @@ final class MongoCache implements CacheInterface
         $items = array_fill_keys($keys, $default);
         $cached = $this->collection->find(['_id' => ['$in' => $keys]], self::$findSettings);
         foreach ($cached as $item) {
-            $items[$item['_id']] = $this->serializer->unserialize($item);
+            $items[$item['_id']] = $this->serializer->unserialize($item['data']);
         }
 
         return $items;
@@ -230,7 +231,7 @@ final class MongoCache implements CacheInterface
      */
     private function updateCache(string $key, array $value, UTCDateTime $expires) : bool
     {
-        $document = ['_id' => $key, 'expires' => $expires]  + $value;
+        $document = ['_id' => $key, 'expires' => $expires, 'data' => $value];
         try {
             $this->collection->updateOne(['_id' => $key], ['$set' => $document], ['upsert' => true]);
             return true;
