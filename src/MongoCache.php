@@ -72,7 +72,7 @@ final class MongoCache implements CacheInterface
             return $default;
         }
 
-        return $this->serializer->unserialize($cached);
+        return $this->serializer->unserialize($cached['data']);
     }
 
     /**
@@ -146,7 +146,7 @@ final class MongoCache implements CacheInterface
         $items = array_fill_keys($keys, $default);
         $cached = $this->collection->find(['_id' => ['$in' => $keys]], self::$findSettings);
         foreach ($cached as $item) {
-            $items[$item['_id']] = $this->serializer->unserialize($item);
+            $items[$item['_id']] = $this->serializer->unserialize($item['data']);
         }
 
         return $items;
@@ -231,7 +231,7 @@ final class MongoCache implements CacheInterface
      */
     private function updateCache(string $key, array $value, UTCDateTime $expires) : bool
     {
-        $document = ['_id' => $key, 'expires' => $expires]  + $value;
+        $document = ['_id' => $key, 'expires' => $expires, 'data' => $value];
         try {
             $this->collection->updateOne(['_id' => $key], ['$set' => $document], ['upsert' => true]);
             return true;
