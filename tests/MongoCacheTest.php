@@ -405,11 +405,11 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(
             [
                 '_id' => $key,
-                'expires' => $actual['expires'],
                 'data' => [
                     'timestamp' => $expected->getTimestamp(),
                     'timezone' => $expected->getTimeZone()->getName(),
                 ],
+                'expires' => $actual['expires'],
             ],
             $actual
         );
