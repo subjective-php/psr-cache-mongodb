@@ -39,7 +39,7 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->collection = (new Client())->selectDatabase('testing')->selectCollection('cache');
         $this->collection->drop();
@@ -119,13 +119,13 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      *
      * @test
      * @covers ::set
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     * @expectedExceptionMessage $ttl must be null, an integer or \DateInterval instance
      *
      * @return void
      */
     public function setInvalidTTL()
     {
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$ttl must be null, an integer or \DateInterval instance');
         $this->cache->set('key', new DateTime(), new DateTime());
     }
 
@@ -134,13 +134,13 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      *
      * @test
      * @covers ::set
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     * @expectedExceptionMessage $key must be a valid non empty string
      *
      * @return void
      */
     public function setEmptyKey()
     {
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$key must be a valid non empty string');
         $this->cache->set('', new DateTime());
     }
 
@@ -149,13 +149,13 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      *
      * @test
      * @covers ::set
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     * @expectedExceptionMessage $key must be a valid non empty string
      *
      * @return void
      */
     public function setNonStringKey()
     {
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$key must be a valid non empty string');
         $this->cache->set(new \StdClass(), new DateTime());
     }
 
@@ -164,13 +164,13 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
      *
      * @test
      * @covers ::set
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     * @expectedExceptionMessage Key 'key with {, ) & @' contains unsupported characters
      *
      * @return void
      */
     public function setKeyContainsReservedCharacters()
     {
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Key \'key with {, ) & @\' contains unsupported characters');
         $this->cache->set('key with {, ) & @', new DateTime());
     }
 
@@ -405,11 +405,11 @@ final class MongoCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(
             [
                 '_id' => $key,
-                'expires' => $actual['expires'],
                 'data' => [
                     'timestamp' => $expected->getTimestamp(),
                     'timezone' => $expected->getTimeZone()->getName(),
                 ],
+                'expires' => $actual['expires'],
             ],
             $actual
         );

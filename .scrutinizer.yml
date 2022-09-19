@@ -1,9 +1,11 @@
 filter:
     excluded_paths:
         - 'vendor/*'
-before_commands:
-    - 'composer install --prefer-source'
 build:
+    environment:
+        php:
+            pecl_extensions:
+                - mongodb
     nodes:
         analysis:
             tests:
