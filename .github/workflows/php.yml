@@ -19,6 +19,10 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
+    - name: Install MongoDB
+      uses: supercharge/mongodb-github-action@1.8.0
+      with:
+        mongodb-version: '4.2'
     - name: Validate composer.json and composer.lock
       run: composer validate
     - name: Install dependencies
